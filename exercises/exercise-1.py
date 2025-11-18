@@ -1,26 +1,27 @@
 import statistics
+import csv
 
 print("Write a function that reads a CSV file with two columns: Name and Score")
 print("Return the average score, and print all names whose score is above average.")
 print("")
 
-fileInput = open("exercise-1-input.csv")
+allRecords = []
 
-# skip the first line, which has column-headers
-next(fileInput)
+with open("exercise-1-input.csv") as f:
+    reader = csv.reader(f)
+    next(reader)  # skip the first line, which has column-headers
 
-allScores = []
-allNames = []
+    for name, score in reader:
+        allRecords.append((name, int(score)))
 
-for line in fileInput:
-    lineSplitUp = line.split(",")
-    allNames.append(lineSplitUp[0])
-    allScores.append(int(lineSplitUp[1]))
+# loop over each tuple in allRecords, and unpacks it into two variables.
+# _ is the name (which we don't care about right now), s is the score
+scores = [s for _, s in allRecords]
+averageScore = round(statistics.fmean(scores), 2)
 
-averageScore = round(statistics.fmean(allScores), 2)
 print("The average test score is: ", averageScore)
+print("Students with above-average scores:")
 
-print("The students with an above average score are:")
-for i in range(len(allNames)):
-    if (allScores[i] > averageScore):
-        print(allNames[i], "with", allScores[i])
+for name, score in allRecords:
+    if score > averageScore:
+        print(name, "with", score)
